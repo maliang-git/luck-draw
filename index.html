@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no" />
+    <!-- TDK -->
+    <title>首页</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <!-- 业态级别样式引入 -->
+    <link rel="stylesheet" href="./yt/css/reset-v1.0.css">
+    <link rel="stylesheet" href="./yt/css/swiper.min.css">
+    <link rel="stylesheet" href="./yt/css/domain-v1.0.css">
+
+    <!-- 当前页面样式引入 -->
+    <link rel="stylesheet" href="./css/style.css">
+    <!--需初始加载的js引入 -->
+    <script src="./yt/js/auto-size.js"></script>
+</head>
+
+<body>
+    <section class="page_container">
+        <!-- S 上面板块 -->
+        <div class="modul_top">
+            <div class="turntable">
+                <img class="jump_btn" src="./images/fh_btn.png" alt="" />
+                <div class="turntable_content">
+                    <img class="pointer" src="./images/zhizhen.png" alt="" />
+                    <i class="lamp yellow_lamp"></i>
+                    <i class="lamp whiet_lamp"></i>
+                    <img class="rotate_img" src="./images/yuanpan.png" alt="" />
+                    <img class="start_btn" src="./images/start_btn.png" alt="" @click="startLuckDraw()" />
+                </div>
+                <strong class="opportunity">今天还有 0 次抽奖机会</strong>
+            </div>
+        </div>
+        <!-- E 上面板块 -->
+        <!-- S 下面板块 -->
+        <div class="modul_btm">
+            <div class="winning_list">
+                <strong>中奖名单</strong>
+                <div class="roll_content">
+                    <ul class="roll_box">
+                        <li>恭喜182*****015抽中“全场无门槛100元优惠券”</li>
+                        <li>恭喜182*****015抽中“XXXXXXXXXXXXXXXX”</li>
+                        <li>恭喜182*****015抽中“全场无门槛100元优惠券”</li>
+                        <li>恭喜182*****015抽中“XXXXXXXXXXXXXXXX”</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="rule">
+                <div class="rule_content">
+                    <strong>抽奖规则</strong>
+                    <p>1、用户在顶xxx平台下单并支付成功，可获得1次抽奖机会，多订单可获得多次抽奖机会；</p>
+                    <p>2、用户抽中奖品为实物奖品，请准确填写奖品收件信息，奖品将在10个工作日内通过快递形式送达，切记收件信息填写需准确，一经提交将无法修改；</p>
+                    <p>3、用户抽中奖品为优惠券奖品，将直接发放至“用户中心-优惠券”，优惠券为全场通用无门槛优惠券，使用截止时间为：12月11日23点59分59秒；</p>
+                    <p>4、抽奖时间：2019年10月28日-2019年11月11日；</p>
+                    <p>5、本次抽奖活动最终解释权归xxx平台所有；</p>
+                </div>
+            </div>
+        </div>
+        <!-- <iframe id="audio" src="./mp3/IMyours.mp3" autoplay="autoplay" hidden></iframe> -->
+        <audio id="audio" hidden autoplay="autoplay" controls="controls" src="./mp3/IMyours.mp3"></audio>
+        <!-- <audio controls="controls" autoplay="autoplay">
+            <source src="./mp3/IMyours.mp3" type="audio/ogg" />
+            <source src="./mp3/IMyours.mp3" type="audio/mpeg" />
+        </audio> -->
+        <!-- E 下面板块 -->
+        <div class="btm_btn">
+            <button class="my_prize_btn" type="button" @click="myPrize=!myPrize">我的奖品 >></button>
+        </div>
+    </section>
+    <script>
+        //--创建触摸监听，当浏览器打开页面时，触摸屏幕触发事件，进行音频播放
+        document.addEventListener('touchstart', function() {
+            var audio = document.getElementById('audio');
+            audio.play();
+        });
+        //抽奖代码
+        var offOn = false; //抽奖状态 
+        var curentNum = 0; //轮盘度数
+        var prizeList = [{ //奖品列表
+            id: 1,
+            name: '20元通用优惠券',
+        }, {
+            id: 2,
+            name: '200元通用优惠券',
+        }, {
+            id: 3,
+            name: '100元通用优惠券',
+        }, {
+            id: 4,
+            name: '碧螺春茶叶套装',
+        }, {
+            id: 5,
+            name: '小爱智能音箱',
+        }, {
+            id: 6,
+            name: '实木茶具套装',
+        }, {
+            id: 7,
+            name: '智能3D投影仪',
+        }, {
+            id: 8,
+            name: '全自动咖啡机',
+        }];
+        var oPointer = document.getElementsByClassName("start_btn")[0];
+        var oTurntable = document.getElementsByClassName("rotate_img")[0];
+
+        oPointer.onclick = function() {
+            var audio = document.getElementById('audio');
+            audio.play();
+            if (!offOn) {
+                var item = rnd(0, 7);
+                var prizeTotal = prizeList.length //商品总数
+                rotateFn(prizeList[item], prizeTotal);
+            }
+        }
+
+        function rnd(n, m) {
+            return Math.floor(Math.random() * (m - n + 1) + n);
+        }
+
+        function rotateFn(prize, prizeTotal) {
+            var angles = 360 / prizeTotal; //360除去商品总数，得到每个商品占用的度数
+            var whereDegrees = (prize.id * angles) - (angles / 2); //抽中商品所在的角度
+            curentNum = curentNum - (curentNum % 360) + 3600 + whereDegrees;
+            offOn = !offOn;
+            oTurntable.style.transition = '10s';
+            oTurntable.style.transform = 'rotate(' + curentNum + 'deg)';
+            setTimeout(function() {
+                offOn = !offOn;
+                alert(prize.name);
+            }, 10000);
+        }
+    </script>
+</body>
+
+</html>
